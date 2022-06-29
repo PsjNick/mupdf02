@@ -1,0 +1,58 @@
+group 'com.paj.mupdf02'
+version '1.0'
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.ghostscript.com/' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        mavenCentral()
+        google()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.1.2'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        maven { url 'https://maven.ghostscript.com/' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        mavenCentral()
+        google()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+
+    compileSdkVersion 31
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion 23
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']   //寻找库文件地址添加进library
+        }
+    }
+
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.lonelypluto:pdf-viewer:1.0.7'
+}
+
