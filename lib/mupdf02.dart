@@ -13,7 +13,7 @@ enum Mupdf02ContentState {
 class Mupdf02Controller {
 
   Function(String ? name)? _onTapDraw;
-  Function(int newIndex)? _onPageIndexChange;
+  Function(int newIndex,int allIndex)? _onPageIndexChange;
   Function(Mupdf02ContentState newState)? _onStateChange;
 
   bool isScrollHor;
@@ -50,7 +50,7 @@ class Mupdf02Controller {
           if (_onPageIndexChange == null) {
             return;
           }
-          _onPageIndexChange!(arguments['PageIndex']);
+          _onPageIndexChange!(arguments['PageIndex'],arguments['AllIndex']);
           break;
         case "StateChange":
 
@@ -78,51 +78,6 @@ class Mupdf02Controller {
 
     });
 
-    //  设置 Android 端的回调
-    // channel.setMethodCallHandler((call) async {
-    //
-    //   var arguments = call.arguments;
-    //   String method = call.method;
-    //
-    //   switch (method) {
-    //
-    //     case "OnTapDraw":
-    //       if (_onTapDraw == null) {
-    //         return;
-    //       }
-    //       _onTapDraw!(arguments['Name']);
-    //       break;
-    //     case "PageIndexChange":
-    //       if (_onPageIndexChange == null) {
-    //         return;
-    //       }
-    //       _onPageIndexChange!(arguments['PageIndex']);
-    //       break;
-    //     case "StateChange":
-    //
-    //       if (_onStateChange == null) {
-    //         return;
-    //       }
-    //
-    //       var stateCode = arguments['StateCode'];
-    //
-    //       switch (stateCode) {
-    //         case 0:
-    //           _onStateChange!(Mupdf02ContentState.Content_View);
-    //           break;
-    //         case 1:
-    //           _onStateChange!(Mupdf02ContentState.Content_Draw);
-    //           break;
-    //         case 2:
-    //           _onStateChange!(Mupdf02ContentState.Content_Search_View);
-    //           break;
-    //       }
-    //
-    //       break;
-    //   }
-    // });
-
-
   }
 
   //  切换文件
@@ -134,6 +89,7 @@ class Mupdf02Controller {
 
     filePath = newFilePath;
     state.setState(() {});
+
   }
 
   //   开始绘制
@@ -206,7 +162,7 @@ class Mupdf02Controller {
 
   //   设置 页面改变 监听
   setPageIndexChangeListener(
-      {required Function(int newIndex) onPageChangeListener}) {
+      {required Function(int newIndex,int allIndex) onPageChangeListener}) {
     _onPageIndexChange = onPageChangeListener;
   }
 

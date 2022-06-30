@@ -24,5 +24,4 @@ public class MuPdfViewFactory extends PlatformViewFactory {
     }
 
 
-
 }

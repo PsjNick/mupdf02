@@ -68,20 +68,17 @@ public class MuPdfView implements PlatformView {
         muPDFReaderView.setListener(new MuPDFReaderViewListener() {
             @Override
             public void onMoveToChild(int i) {
+
                 currentPageIndex = i;
 
                 Map resArg = new HashMap();
                 resArg.put("Method","PageIndexChange");
                 Map resArgData = new HashMap();
-                resArgData.put("PageIndex",currentPageIndex+1);
+                resArgData.put("PageIndex",currentPageIndex);
+                resArgData.put("AllIndex",muPDFCore.countPages() - 1);
                 resArg.put("Data",resArgData);
 
                 Mupdf02Plugin.events.success(resArg);
-
-//                Mupdf02Plugin.channel.invokeMethod("PageIndexChange",resArg);
-
-
-
 
             }
 
@@ -116,6 +113,15 @@ public class MuPdfView implements PlatformView {
 
             }
         });
+
+        Map resArg = new HashMap();
+        resArg.put("Method","PageIndexChange");
+        Map resArgData = new HashMap();
+        resArgData.put("PageIndex",currentPageIndex);
+        resArgData.put("AllIndex",muPDFCore.countPages() - 1);
+        resArg.put("Data",resArgData);
+
+        Mupdf02Plugin.events.success(resArg);
 
     }
 

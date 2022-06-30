@@ -138,8 +138,6 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
 
                 events.success(resArg3);
 
-//                channel.invokeMethod("StateChange",resArg3);
-
                 MuPDFView pageView2 = (MuPDFView) muPdfViewFactory.muPdfView.muPDFReaderView.getDisplayedView();
 
                 if (pageView2 != null) {
@@ -154,27 +152,6 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
 
             case "SetPenColor":     // 设置画笔颜色
 
-
-//                if(muPdfViewFactory.muPdfView.currentModel == MuPDFReaderView.Mode.Drawing){
-//
-//                    muPdfViewFactory.muPdfView.currentModel = MuPDFReaderView.Mode.Viewing;
-//                    muPdfViewFactory.muPdfView.muPDFReaderView.setMode(muPdfViewFactory.muPdfView.currentModel);
-//
-//                    MuPDFView pageViewSetPenColor = (MuPDFView) muPdfViewFactory.muPdfView.muPDFReaderView.getDisplayedView();
-//
-//                    if (pageViewSetPenColor != null) {
-//                        pageViewSetPenColor.deselectText();
-//                        pageViewSetPenColor.saveDraw();
-//                        pageViewSetPenColor.update();
-//                    }
-//                    muPdfViewFactory.muPdfView.muPDFReaderView.resetupChildren();
-//
-//                    muPdfViewFactory.muPdfView.currentModel = MuPDFReaderView.Mode.Drawing;
-//                    muPdfViewFactory.muPdfView.muPDFReaderView.setMode(muPdfViewFactory.muPdfView.currentModel);
-//
-//                }
-
-
                 muPdfViewFactory.muPdfView.muPDFReaderView.setInkColor(Color.parseColor((String) arguments.get("Color")));
 
                 result.success(true);
@@ -182,24 +159,6 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
                 break;
 
             case "SepPenWidth":     // 设置画笔粗细
-
-//                if(muPdfViewFactory.muPdfView.currentModel == MuPDFReaderView.Mode.Drawing){
-//
-//                    muPdfViewFactory.muPdfView.currentModel = MuPDFReaderView.Mode.Viewing;
-//                    muPdfViewFactory.muPdfView.muPDFReaderView.setMode(muPdfViewFactory.muPdfView.currentModel);
-//
-//                    MuPDFView pageViewSetPenColor = (MuPDFView) muPdfViewFactory.muPdfView.muPDFReaderView.getDisplayedView();
-//                    if (pageViewSetPenColor != null) {
-//                        pageViewSetPenColor.deselectText();
-//                        pageViewSetPenColor.saveDraw();
-//                        pageViewSetPenColor.update();
-//                    }
-//                    muPdfViewFactory.muPdfView.muPDFReaderView.resetupChildren();
-//
-//                    muPdfViewFactory.muPdfView.currentModel = MuPDFReaderView.Mode.Drawing;
-//                    muPdfViewFactory.muPdfView.muPDFReaderView.setMode(muPdfViewFactory.muPdfView.currentModel);
-//
-//                }
 
                 muPdfViewFactory.muPdfView.muPDFReaderView.setPaintStrockWidth(Float.parseFloat((String) arguments.get("Width")));
 
@@ -232,7 +191,8 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
                     result.success(false);
                     return;
                 }
-                muPdfViewFactory.muPdfView.muPDFReaderView.setDisplayedViewIndex((int)arguments.get("PageIndex"));
+                int pageIndex = (int)arguments.get("PageIndex");
+                muPdfViewFactory.muPdfView.muPDFReaderView.setDisplayedViewIndex(pageIndex);
                 result.success(true);
                 break;
 
