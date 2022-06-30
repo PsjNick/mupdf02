@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 const MethodChannel channel = MethodChannel("mupdf2_method_channel");
+const EventChannel channelEvent = EventChannel("mupdf2_method_channel_event");
 
 enum Mupdf02ContentState {
   Content_View,
@@ -14,7 +15,6 @@ class Mupdf02Controller {
   Function(String ? name)? _onTapDraw;
   Function(int newIndex)? _onPageIndexChange;
   Function(Mupdf02ContentState newState)? _onStateChange;
-
 
   bool isScrollHor;
 
@@ -29,11 +29,14 @@ class Mupdf02Controller {
 
     filePath = initFilePath;
 
-    //  设置 Android 端的回调
-    channel.setMethodCallHandler((call) async {
+    channelEvent.receiveBroadcastStream().listen((event) {
 
-      var arguments = call.arguments;
-      String method = call.method;
+      if(event == null || event is! Map){
+        return;
+      }
+
+      String method = event['Method'];
+      var arguments = event['Data'];
 
       switch (method) {
 
@@ -71,7 +74,53 @@ class Mupdf02Controller {
 
           break;
       }
+
+
     });
+
+    //  设置 Android 端的回调
+    // channel.setMethodCallHandler((call) async {
+    //
+    //   var arguments = call.arguments;
+    //   String method = call.method;
+    //
+    //   switch (method) {
+    //
+    //     case "OnTapDraw":
+    //       if (_onTapDraw == null) {
+    //         return;
+    //       }
+    //       _onTapDraw!(arguments['Name']);
+    //       break;
+    //     case "PageIndexChange":
+    //       if (_onPageIndexChange == null) {
+    //         return;
+    //       }
+    //       _onPageIndexChange!(arguments['PageIndex']);
+    //       break;
+    //     case "StateChange":
+    //
+    //       if (_onStateChange == null) {
+    //         return;
+    //       }
+    //
+    //       var stateCode = arguments['StateCode'];
+    //
+    //       switch (stateCode) {
+    //         case 0:
+    //           _onStateChange!(Mupdf02ContentState.Content_View);
+    //           break;
+    //         case 1:
+    //           _onStateChange!(Mupdf02ContentState.Content_Draw);
+    //           break;
+    //         case 2:
+    //           _onStateChange!(Mupdf02ContentState.Content_Search_View);
+    //           break;
+    //       }
+    //
+    //       break;
+    //   }
+    // });
 
 
   }

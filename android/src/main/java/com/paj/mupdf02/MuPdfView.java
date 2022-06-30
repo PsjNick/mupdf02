@@ -71,10 +71,18 @@ public class MuPdfView implements PlatformView {
                 currentPageIndex = i;
 
                 Map resArg = new HashMap();
-                resArg.put("PageIndex",currentPageIndex+1);
+                resArg.put("Method","PageIndexChange");
+                Map resArgData = new HashMap();
+                resArgData.put("PageIndex",currentPageIndex+1);
+                resArg.put("Data",resArgData);
+
+                Mupdf02Plugin.events.success(resArg);
+
+//                Mupdf02Plugin.channel.invokeMethod("PageIndexChange",resArg);
 
 
-                Mupdf02Plugin.channel.invokeMethod("PageIndexChange",resArg);
+
+
             }
 
             @Override
@@ -95,9 +103,16 @@ public class MuPdfView implements PlatformView {
                 }
 
                 Map resArg = new HashMap();
-                resArg.put("Name",item.name());
+                resArg.put("Method","OnTapDraw");
 
-                Mupdf02Plugin.channel.invokeMethod("OnTapDraw",resArg);
+                Map resArgData = new HashMap();
+                resArgData.put("Name",item.name());
+
+                resArg.put("Data",resArgData);
+
+                Mupdf02Plugin.events.success(resArg);
+
+//                Mupdf02Plugin.channel.invokeMethod("OnTapDraw",resArg);
 
             }
         });

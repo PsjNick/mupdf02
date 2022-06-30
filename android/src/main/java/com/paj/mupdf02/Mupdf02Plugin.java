@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -20,14 +21,29 @@ import io.flutter.plugin.common.MethodChannel.Result;
 public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
 
     public static MethodChannel channel;
+    public static  EventChannel.EventSink events;
+
     private MuPdfViewFactory muPdfViewFactory;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
 
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "mupdf2_method_channel");
-
         channel.setMethodCallHandler(this);
+
+        EventChannel eventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "mupdf2_method_channel_event");
+        eventChannel.setStreamHandler(new EventChannel.StreamHandler() {
+            @Override
+            public void onListen(Object arguments, EventChannel.EventSink events) {
+                Mupdf02Plugin.events = events;
+            }
+
+            @Override
+            public void onCancel(Object arguments) {
+
+            }
+        });
+
         muPdfViewFactory = new MuPdfViewFactory();
 
         flutterPluginBinding.getPlatformViewRegistry().registerViewFactory("mupdf2_view", muPdfViewFactory);
@@ -56,10 +72,16 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
                 muPdfViewFactory.muPdfView.muPDFReaderView.setMode(muPdfViewFactory.muPdfView.currentModel);
 
                 Map resArg = new HashMap();
-                resArg.put("StateCode",1);
 
+                resArg.put("Method","StateChange");
+                Map resArgData = new HashMap();
+                resArgData.put("StateCode",1);
+                resArg.put("Data",resArgData);
 
-                channel.invokeMethod("StateChange",resArg);
+                events.success(resArg);
+
+//                channel.invokeMethod("StateChange",resArg);
+
                 result.success(true);
 
                 break;
@@ -74,10 +96,20 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
                 muPdfViewFactory.muPdfView.currentModel = MuPDFReaderView.Mode.Viewing;
                 muPdfViewFactory.muPdfView.muPDFReaderView.setMode(muPdfViewFactory.muPdfView.currentModel);
 
-                Map resArg2 = new HashMap();
-                resArg2.put("StateCode",0);
 
-                channel.invokeMethod("StateChange",resArg2);
+                Map resArg2 = new HashMap();
+
+                resArg2.put("Method","StateChange");
+                Map resArg2Data = new HashMap();
+                resArg2Data.put("StateCode",0);
+                resArg2.put("Data",resArg2Data);
+
+                events.success(resArg2);
+
+//                Map resArg2 = new HashMap();
+//                resArg2.put("StateCode",0);
+
+//                channel.invokeMethod("StateChange",resArg2);
 
                 result.success(true);
 
@@ -97,10 +129,16 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
                 muPdfViewFactory.muPdfView.muPDFReaderView.setMode(muPdfViewFactory.muPdfView.currentModel);
 
                 Map resArg3 = new HashMap();
-                resArg3.put("StateCode",0);
 
+                resArg3.put("Method","StateChange");
+                Map resArg3Data = new HashMap();
+                resArg3Data.put("StateCode",0);
 
-                channel.invokeMethod("StateChange",resArg3);
+                resArg3.put("Data",resArg3Data);
+
+                events.success(resArg3);
+
+//                channel.invokeMethod("StateChange",resArg3);
 
                 MuPDFView pageView2 = (MuPDFView) muPdfViewFactory.muPdfView.muPDFReaderView.getDisplayedView();
 

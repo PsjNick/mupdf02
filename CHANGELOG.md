@@ -1,3 +1,7 @@
+## 0.0.3
+* 将Android端回调Flutter端的方式由MethodChannel改为EventChannel
+
+
 
 ## 0.0.2
 
