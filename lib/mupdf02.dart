@@ -10,6 +10,7 @@ enum Mupdf02ContentState {
 }
 
 class Mupdf02Controller {
+
   Function(String ? name)? _onTapDraw;
   Function(int newIndex)? _onPageIndexChange;
   Function(Mupdf02ContentState newState)? _onStateChange;
