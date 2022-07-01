@@ -13,7 +13,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -22,9 +21,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-
-
 
 class PageHome extends StatefulWidget {
   const PageHome({Key? key}) : super(key: key);
@@ -41,29 +37,29 @@ class _PageHomeState extends State<PageHome> {
     super.initState();
     mupdf02controller = Mupdf02Controller(
       initFilePath:
-      '/data/data/com.paj.mupdf02_example/cache/2021.12英语四级解析第3套.pdf',
+          '/data/data/com.paj.mupdf02_example/cache/2021.12英语四级解析第3套.pdf',
       isScrollHor: false,
     );
 
     mupdf02controller.setPageIndexChangeListener(
-        onPageChangeListener: (int newPageIndex,int totalPageIndex) {
-          print('当前页面为：$newPageIndex');
-          print('总页数为：$totalPageIndex');
-        });
+        onPageChangeListener: (int newPageIndex, int totalPageIndex) {
+      print('当前页面为：$newPageIndex');
+      print('总页数为：$totalPageIndex');
+    });
 
     mupdf02controller.setStateChangeListener(
         stateChangeListener: (Mupdf02ContentState state) {
-          print("当前Pdf状态：${state.name}");
+      print("当前Pdf状态：${state.name}");
 
-          switch (state) {
-            case Mupdf02ContentState.Content_View:
-              break;
-            case Mupdf02ContentState.Content_Draw:
-              break;
-            case Mupdf02ContentState.Content_Search_View:
-              break;
-          }
-        });
+      switch (state) {
+        case Mupdf02ContentState.Content_View:
+          break;
+        case Mupdf02ContentState.Content_Draw:
+          break;
+        case Mupdf02ContentState.Content_Search_View:
+          break;
+      }
+    });
 
     mupdf02controller.setTapDrawedListener(onTapDrawListener: (String? name) {
       print("点击了绘制：$name");
@@ -117,7 +113,7 @@ class _PageHomeState extends State<PageHome> {
                   onPressed: () async {
                     mupdf02controller.switchFile(
                       newFilePath:
-                      "/data/data/com.paj.mupdf02_example/cache/2021.12英语四级解析第3套.pdf",
+                          "/data/data/com.paj.mupdf02_example/cache/2021.12英语四级解析第3套.pdf",
                     );
                   },
                   child: const Text('打开文件1'),
@@ -126,7 +122,7 @@ class _PageHomeState extends State<PageHome> {
                   onPressed: () async {
                     mupdf02controller.switchFile(
                       newFilePath:
-                      "/data/data/com.paj.mupdf02_example/cache/pdf_t1.pdf",
+                          "/data/data/com.paj.mupdf02_example/cache/pdf_t1.pdf",
                     );
                   },
                   child: const Text('打开文件2'),
@@ -200,7 +196,6 @@ class _PageHomeState extends State<PageHome> {
                   child: const Text('跳转到第二页'),
                 ),
 
-
                 TextButton(
                   onPressed: () async {
                     mupdf02controller.jumpToUpPageIndex();
@@ -215,14 +210,38 @@ class _PageHomeState extends State<PageHome> {
                   child: const Text('下一页'),
                 ),
 
-
                 TextButton(
                   onPressed: () async {
                     int? totalNum = await mupdf02controller.totalPageNum();
-                    print("页面总数为: $totalNum");
+
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(
+                              '页面总数为: $totalNum',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('消失'),
+                              ),
+                            ],
+                          );
+                        },);
                   },
                   child: const Text('页面总数'),
                 ),
+
+                TextButton(
+                  onPressed: () async {
+                    await mupdf02controller.openFileAgain(initPageIndex: 2);
+                  },
+                  child: const Text('重新打开文件\n并定位到第2页'),
+                ),
+
                 // TextButton(
                 //   onPressed: () async {
                 //     // todo
@@ -242,4 +261,3 @@ class _PageHomeState extends State<PageHome> {
     );
   }
 }
-

@@ -12,9 +12,12 @@ enum Mupdf02ContentState {
 }
 
 class Mupdf02Controller {
+
   Function(String? name)? _onTapDraw;
   Function(int newIndex, int allIndex)? _onPageIndexChange;
   Function(Mupdf02ContentState newState)? _onStateChange;
+
+  int initPageIndex = 0;
 
   bool isScrollHor;
 
@@ -24,6 +27,7 @@ class Mupdf02Controller {
 
   Mupdf02Controller({
     this.isScrollHor = true,
+    this.initPageIndex = 0,
     required String initFilePath,
   }) {
     filePath = initFilePath;
@@ -74,13 +78,33 @@ class Mupdf02Controller {
   }
 
   //  切换文件
-  switchFile({required String newFilePath}) async {
+  switchFile({required String newFilePath,int initPageIndex = 0,}) async {
+
     if (newFilePath == filePath) {
       return;
     }
 
+    this.initPageIndex = initPageIndex;
     filePath = newFilePath;
     state.setState(() {});
+
+  }
+
+  // 再次打开文件
+  openFileAgain({int initPageIndex = 0}) async {
+
+    this.initPageIndex = initPageIndex;
+
+    state.setState(() {
+      state.showPdf = false;
+    });
+
+    await Future.delayed(Duration(milliseconds: 300));
+
+    state.setState(() {
+      state.showPdf = true;
+    });
+
   }
 
   //   开始绘制
@@ -93,7 +117,7 @@ class Mupdf02Controller {
     await channel.invokeMethod("CancelDraw");
   }
 
-  // todo 删除绘制
+  //  删除绘制
   delDraw() async {
     await channel.invokeMethod("DelDraw");
   }
@@ -134,13 +158,13 @@ class Mupdf02Controller {
 
   // todo 下一页
 
-  jumpToNextPageIndex()async{
+  jumpToNextPageIndex() async {
     await channel.invokeMethod("SwitchToNextPage");
   }
 
 
   // todo 上一页
-  jumpToUpPageIndex()async{
+  jumpToUpPageIndex() async {
     await channel.invokeMethod("SwitchToUpPage");
   }
 
@@ -173,6 +197,8 @@ class Mupdf02Controller {
     _onStateChange = stateChangeListener;
   }
 
+
+
 // todo ------------------------------ 稍后来做 ------------------------------
 
 // todo 开始文字 搜索
@@ -198,6 +224,9 @@ class Mupdf02Widget extends StatefulWidget {
 }
 
 class _Mupdf02WidgetState extends State<Mupdf02Widget> {
+
+  bool showPdf = true;
+
   @override
   void initState() {
     super.initState();
@@ -206,19 +235,18 @@ class _Mupdf02WidgetState extends State<Mupdf02Widget> {
 
   @override
   Widget build(BuildContext context) {
-
-    return  AndroidView(
+    return showPdf ? AndroidView(
       key: ValueKey(widget.controller.filePath),
       viewType: "mupdf2_view",
       creationParams: {
         "FilePath": widget.controller.filePath,
         "IsScrollHor": widget.controller.isScrollHor,
+        "InitPageIndex":widget.controller.initPageIndex,
       },
       creationParamsCodec: const StandardMessageCodec(),
       onPlatformViewCreated: (id) {
         // todo 暂时还不知道干什么用
       },
-    );
-
+    ) : Container(color: Colors.transparent,);
   }
 }

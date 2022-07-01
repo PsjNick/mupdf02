@@ -27,7 +27,7 @@ public class MuPdfView implements PlatformView {
     public View rootView;
 
     // 当前页码
-    int currentPageIndex = 1;
+    int currentPageIndex = 0;
 
     public  MuPDFReaderView.Mode currentModel = MuPDFReaderView.Mode.Viewing;
 
@@ -41,6 +41,8 @@ public class MuPdfView implements PlatformView {
         this.filePath = ((Map<String, Object>) args).get("FilePath").toString();
 
         boolean IsScrollHor = (boolean)((Map<String, Object>) args).get("IsScrollHor");
+
+        currentPageIndex = (int)((Map<String, Object>) args).get("InitPageIndex");
 
         log("FilePath: " + filePath);
 
@@ -62,7 +64,6 @@ public class MuPdfView implements PlatformView {
 
         muPDFReaderView.setHorizontalScrolling(IsScrollHor);
 
-        muPDFReaderView.setDisplayedViewIndex(0);
 
 
         muPDFReaderView.setListener(new MuPDFReaderViewListener() {
@@ -114,14 +115,8 @@ public class MuPdfView implements PlatformView {
             }
         });
 
-        Map resArg = new HashMap();
-        resArg.put("Method","PageIndexChange");
-        Map resArgData = new HashMap();
-        resArgData.put("PageIndex",0);
-        resArgData.put("AllIndex",muPDFCore.countPages() - 1);
-        resArg.put("Data",resArgData);
 
-        Mupdf02Plugin.events.success(resArg);
+        muPDFReaderView.setDisplayedViewIndex(currentPageIndex);
 
     }
 
