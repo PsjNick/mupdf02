@@ -1,6 +1,9 @@
 package com.paj.mupdf02;
 
 import android.graphics.Color;
+import android.os.SystemClock;
+import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -80,7 +83,6 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
 
                 events.success(resArg);
 
-//                channel.invokeMethod("StateChange",resArg);
 
                 result.success(true);
 
@@ -91,27 +93,10 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
                 if (pageView != null) {
                     pageView.deselectText();
                     pageView.cancelDraw();
+                    result.success(true);
+                }else{
+                    result.success(false);
                 }
-
-                muPdfViewFactory.muPdfView.currentModel = MuPDFReaderView.Mode.Viewing;
-                muPdfViewFactory.muPdfView.muPDFReaderView.setMode(muPdfViewFactory.muPdfView.currentModel);
-
-
-                Map resArg2 = new HashMap();
-
-                resArg2.put("Method","StateChange");
-                Map resArg2Data = new HashMap();
-                resArg2Data.put("StateCode",0);
-                resArg2.put("Data",resArg2Data);
-
-                events.success(resArg2);
-
-//                Map resArg2 = new HashMap();
-//                resArg2.put("StateCode",0);
-
-//                channel.invokeMethod("StateChange",resArg2);
-
-                result.success(true);
 
                 break;
 
@@ -204,6 +189,22 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
                 result.success(muPdfViewFactory.muPdfView.currentPageIndex);
                 break;
 
+            case "SwitchToUpPage":    // 跳转到上一页
+
+                View view = muPdfViewFactory.muPdfView.muPDFReaderView;
+                simulateTouchEvent(view,10f ,view.getHeight() / 2f + 10f);
+                // todo
+                result.success(true);
+                break;
+
+
+            case "SwitchToNextPage":    // 跳转到下一页
+                // todo
+                View view2 = muPdfViewFactory.muPdfView.muPDFReaderView;
+                simulateTouchEvent(view2,view2.getWidth() - 10f ,view2.getHeight() / 2f);
+                result.success(true);
+                break;
+
 
             default:
                 result.success(null);
@@ -214,6 +215,22 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         channel.setMethodCallHandler(null);
+    }
+
+
+    private void simulateTouchEvent( View view, Float x, Float y) {
+        long downTime = SystemClock.uptimeMillis();
+        long eventTime = SystemClock.uptimeMillis() + 100;
+        int metaState = 0;
+        MotionEvent motionEvent = MotionEvent.obtain(downTime, eventTime,
+                MotionEvent.ACTION_DOWN, x, y, metaState);
+
+        view.dispatchTouchEvent(motionEvent);
+
+        MotionEvent upEvent = MotionEvent.obtain(downTime + 1000, eventTime + 1000,
+                MotionEvent.ACTION_UP, x,y, metaState);
+
+        view.dispatchTouchEvent(upEvent);
     }
 
 

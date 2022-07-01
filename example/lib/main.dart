@@ -46,8 +46,9 @@ class _PageHomeState extends State<PageHome> {
     );
 
     mupdf02controller.setPageIndexChangeListener(
-        onPageChangeListener: (int newPageIndex) {
+        onPageChangeListener: (int newPageIndex,int totalPageIndex) {
           print('当前页面为：$newPageIndex');
+          print('总页数为：$totalPageIndex');
         });
 
     mupdf02controller.setStateChangeListener(
@@ -198,6 +199,23 @@ class _PageHomeState extends State<PageHome> {
                   },
                   child: const Text('跳转到第二页'),
                 ),
+
+
+                TextButton(
+                  onPressed: () async {
+                    mupdf02controller.jumpToUpPageIndex();
+                  },
+                  child: const Text('上一页'),
+                ),
+
+                TextButton(
+                  onPressed: () async {
+                    mupdf02controller.jumpToNextPageIndex();
+                  },
+                  child: const Text('下一页'),
+                ),
+
+
                 TextButton(
                   onPressed: () async {
                     int? totalNum = await mupdf02controller.totalPageNum();

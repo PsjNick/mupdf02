@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,9 +12,8 @@ enum Mupdf02ContentState {
 }
 
 class Mupdf02Controller {
-
-  Function(String ? name)? _onTapDraw;
-  Function(int newIndex,int allIndex)? _onPageIndexChange;
+  Function(String? name)? _onTapDraw;
+  Function(int newIndex, int allIndex)? _onPageIndexChange;
   Function(Mupdf02ContentState newState)? _onStateChange;
 
   bool isScrollHor;
@@ -23,15 +23,13 @@ class Mupdf02Controller {
   late _Mupdf02WidgetState state;
 
   Mupdf02Controller({
-      this.isScrollHor = true,
+    this.isScrollHor = true,
     required String initFilePath,
   }) {
-
     filePath = initFilePath;
 
     channelEvent.receiveBroadcastStream().listen((event) {
-
-      if(event == null || event is! Map){
+      if (event == null || event is! Map) {
         return;
       }
 
@@ -39,7 +37,6 @@ class Mupdf02Controller {
       var arguments = event['Data'];
 
       switch (method) {
-
         case "OnTapDraw":
           if (_onTapDraw == null) {
             return;
@@ -50,10 +47,9 @@ class Mupdf02Controller {
           if (_onPageIndexChange == null) {
             return;
           }
-          _onPageIndexChange!(arguments['PageIndex'],arguments['AllIndex']);
+          _onPageIndexChange!(arguments['PageIndex'], arguments['AllIndex']);
           break;
         case "StateChange":
-
           if (_onStateChange == null) {
             return;
           }
@@ -74,22 +70,17 @@ class Mupdf02Controller {
 
           break;
       }
-
-
     });
-
   }
 
   //  切换文件
   switchFile({required String newFilePath}) async {
-
     if (newFilePath == filePath) {
       return;
     }
 
     filePath = newFilePath;
     state.setState(() {});
-
   }
 
   //   开始绘制
@@ -114,15 +105,12 @@ class Mupdf02Controller {
 
   //   设置画笔颜色
   setPenColor({required Color color}) async {
-
     String temp = color.value.toRadixString(16);
     String colorStr = "#${temp.substring(2, 8)}";
 
     await channel.invokeMethod("SetPenColor", {
       "Color": colorStr,
     });
-
-
   }
 
   //   设置画笔粗细
@@ -144,6 +132,19 @@ class Mupdf02Controller {
     });
   }
 
+  // todo 下一页
+
+  jumpToNextPageIndex()async{
+    await channel.invokeMethod("SwitchToNextPage");
+  }
+
+
+  // todo 上一页
+  jumpToUpPageIndex()async{
+    await channel.invokeMethod("SwitchToUpPage");
+  }
+
+
   //   页面总数
   Future<int?> totalPageNum() async {
     return await channel.invokeMethod("TotalPageNum");
@@ -154,15 +155,15 @@ class Mupdf02Controller {
     return await channel.invokeMethod("CurrentPageNum");
   }
 
-
   //  设置 点击 已绘制内容 监听
-  setTapDrawedListener({required Function(String ? name) onTapDrawListener}) async {
+  setTapDrawedListener(
+      {required Function(String? name) onTapDrawListener}) async {
     _onTapDraw = onTapDrawListener;
   }
 
   //   设置 页面改变 监听
   setPageIndexChangeListener(
-      {required Function(int newIndex,int allIndex) onPageChangeListener}) {
+      {required Function(int newIndex, int allIndex) onPageChangeListener}) {
     _onPageIndexChange = onPageChangeListener;
   }
 
@@ -205,7 +206,8 @@ class _Mupdf02WidgetState extends State<Mupdf02Widget> {
 
   @override
   Widget build(BuildContext context) {
-    return AndroidView(
+
+    return  AndroidView(
       key: ValueKey(widget.controller.filePath),
       viewType: "mupdf2_view",
       creationParams: {
@@ -215,8 +217,8 @@ class _Mupdf02WidgetState extends State<Mupdf02Widget> {
       creationParamsCodec: const StandardMessageCodec(),
       onPlatformViewCreated: (id) {
         // todo 暂时还不知道干什么用
-
       },
     );
+
   }
 }

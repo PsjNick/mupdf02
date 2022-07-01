@@ -24,7 +24,7 @@ public class MuPdfView implements PlatformView {
 
     private  String filePath;
 
-    private View rootView;
+    public View rootView;
 
     // 当前页码
     int currentPageIndex = 1;
@@ -117,7 +117,7 @@ public class MuPdfView implements PlatformView {
         Map resArg = new HashMap();
         resArg.put("Method","PageIndexChange");
         Map resArgData = new HashMap();
-        resArgData.put("PageIndex",currentPageIndex);
+        resArgData.put("PageIndex",0);
         resArgData.put("AllIndex",muPDFCore.countPages() - 1);
         resArg.put("Data",resArgData);
 

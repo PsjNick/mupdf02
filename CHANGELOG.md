@@ -1,3 +1,11 @@
+
+## 0.0.4
+* 新增上一页 / 下一页Api
+
+
+
+
+
 ## 0.0.3
 * 将Android端回调Flutter端的方式由MethodChannel改为EventChannel
 
