@@ -1,6 +1,6 @@
 name: mupdf02
 description: 基于mupdf的Android端pdf插件，支持简单的文件批注操作.
-version: 0.0.4
+version: 0.0.5
 homepage: https://github.com/PsjNick/mupdf02.git
 
 environment:
