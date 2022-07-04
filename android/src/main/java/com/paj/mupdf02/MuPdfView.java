@@ -1,6 +1,7 @@
 package com.paj.mupdf02;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.artifex.mupdfdemo.MuPDFReaderView;
 import com.artifex.mupdfdemo.MuPDFReaderViewListener;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import io.flutter.plugin.platform.PlatformView;
@@ -24,7 +26,7 @@ public class MuPdfView implements PlatformView {
 
     private  String filePath;
 
-    public View rootView;
+    public View rootView,frameEye;
 
     // 当前页码
     int currentPageIndex = 0;
@@ -49,6 +51,7 @@ public class MuPdfView implements PlatformView {
         rootView = LayoutInflater.from(context).inflate(R.layout.mupdf_content, null);
 
         muPDFReaderView = rootView.findViewById(R.id.mupdfreaderview);
+        frameEye = rootView.findViewById(R.id.frame_eye);
 
         try {
             muPDFCore = new MuPDFCore(context, filePath);
@@ -117,6 +120,16 @@ public class MuPdfView implements PlatformView {
 
 
         muPDFReaderView.setDisplayedViewIndex(currentPageIndex);
+
+
+        // 护眼模式
+
+        String colorStr = ((Map<String, Object>) args).get("InitFrameEyeColor").toString();
+
+        if(!colorStr.toLowerCase(Locale.ROOT).equals("null") && !colorStr.isEmpty()) {
+            frameEye.setBackgroundColor(Color.parseColor(colorStr));
+        }
+
 
     }
 

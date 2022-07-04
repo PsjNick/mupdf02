@@ -21,6 +21,8 @@ class Mupdf02Controller {
 
   bool isScrollHor;
 
+  String ? InitFrameEyeColor;
+
   late String filePath;
 
   late _Mupdf02WidgetState state;
@@ -29,7 +31,13 @@ class Mupdf02Controller {
     this.isScrollHor = true,
     this.initPageIndex = 0,
     required String initFilePath,
+    Color ? initFrameEyeColor,
   }) {
+
+    if(initFrameEyeColor != null){
+      InitFrameEyeColor = _colorStr(color: initFrameEyeColor);
+    }
+
     filePath = initFilePath;
 
     channelEvent.receiveBroadcastStream().listen((event) {
@@ -99,7 +107,7 @@ class Mupdf02Controller {
       state.showPdf = false;
     });
 
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
 
     state.setState(() {
       state.showPdf = true;
@@ -129,11 +137,8 @@ class Mupdf02Controller {
 
   //   设置画笔颜色
   setPenColor({required Color color}) async {
-    String temp = color.value.toRadixString(16);
-    String colorStr = "#${temp.substring(2, 8)}";
-
     await channel.invokeMethod("SetPenColor", {
-      "Color": colorStr,
+      "Color":  _colorStr(color: color),
     });
   }
 
@@ -156,14 +161,13 @@ class Mupdf02Controller {
     });
   }
 
-  // todo 下一页
-
+  //   下一页
   jumpToNextPageIndex() async {
     await channel.invokeMethod("SwitchToNextPage");
   }
 
 
-  // todo 上一页
+  //   上一页
   jumpToUpPageIndex() async {
     await channel.invokeMethod("SwitchToUpPage");
   }
@@ -178,6 +182,20 @@ class Mupdf02Controller {
   Future<int?> currentPageNum() async {
     return await channel.invokeMethod("CurrentPageNum");
   }
+
+
+  //   护眼模式颜色
+  setFrameEyeColor({required Color color})async{
+
+
+    InitFrameEyeColor = _colorStr(color: color);
+
+    return await channel.invokeMethod("FrameEyeColor",{
+      "Color": _colorStr(color: color),
+    });
+
+  }
+
 
   //  设置 点击 已绘制内容 监听
   setTapDrawedListener(
@@ -198,6 +216,19 @@ class Mupdf02Controller {
   }
 
 
+
+  String _colorStr({required Color color}){
+    String temp = color.value.toRadixString(16);
+    String colorStr = "";
+
+    if(temp == "0"){
+      colorStr = "#00000000";
+    }else{
+      colorStr = "#${temp.substring(0, 8)}";
+    }
+
+    return colorStr;
+  }
 
 // todo ------------------------------ 稍后来做 ------------------------------
 
@@ -242,6 +273,7 @@ class _Mupdf02WidgetState extends State<Mupdf02Widget> {
         "FilePath": widget.controller.filePath,
         "IsScrollHor": widget.controller.isScrollHor,
         "InitPageIndex":widget.controller.initPageIndex,
+        "InitFrameEyeColor":widget.controller.InitFrameEyeColor,
       },
       creationParamsCodec: const StandardMessageCodec(),
       onPlatformViewCreated: (id) {

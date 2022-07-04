@@ -136,11 +136,13 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
                 break;
 
             case "SetPenColor":     // 设置画笔颜色
-
                 muPdfViewFactory.muPdfView.muPDFReaderView.setInkColor(Color.parseColor((String) arguments.get("Color")));
-
                 result.success(true);
 
+                break;
+
+            case "FrameEyeColor":   // 护眼模式颜色
+                muPdfViewFactory.muPdfView.frameEye.setBackgroundColor(Color.parseColor((String) arguments.get("Color")));
                 break;
 
             case "SepPenWidth":     // 设置画笔粗细
@@ -193,13 +195,13 @@ public class Mupdf02Plugin implements FlutterPlugin, MethodCallHandler {
 
                 View view = muPdfViewFactory.muPdfView.muPDFReaderView;
                 simulateTouchEvent(view,10f ,view.getHeight() / 2f + 10f);
-                // todo
+
                 result.success(true);
                 break;
 
 
             case "SwitchToNextPage":    // 跳转到下一页
-                // todo
+
                 View view2 = muPdfViewFactory.muPdfView.muPDFReaderView;
                 simulateTouchEvent(view2,view2.getWidth() - 10f ,view2.getHeight() / 2f);
                 result.success(true);
